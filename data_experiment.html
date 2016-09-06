@@ -127,16 +127,8 @@ $(document).ready(function () {
 <div id="the-data" class="section level2">
 <h2>The data</h2>
 <p>I downloaded the datsets and read them into R from a local directory.</p>
-<pre class="r"><code>library(mlr)</code></pre>
-<pre><code>## Warning: package 'mlr' was built under R version 3.2.5</code></pre>
-<pre><code>## Loading required package: BBmisc</code></pre>
-<pre><code>## Warning: package 'BBmisc' was built under R version 3.2.5</code></pre>
-<pre><code>## Loading required package: ggplot2</code></pre>
-<pre><code>## Loading required package: ParamHelpers</code></pre>
-<pre><code>## Warning: package 'ParamHelpers' was built under R version 3.2.5</code></pre>
-<pre><code>## Loading required package: stringi</code></pre>
-<pre><code>## Warning: package 'stringi' was built under R version 3.2.3</code></pre>
-<pre class="r"><code>train&lt;-read.csv(&quot;train_gbW7HTd.csv&quot;, na.strings = c(&quot;&quot;,&quot; &quot;,NA))
+<pre class="r"><code>library(mlr)
+train&lt;-read.csv(&quot;train_gbW7HTd.csv&quot;, na.strings = c(&quot;&quot;,&quot; &quot;,NA))
 test&lt;-read.csv(&quot;test_2AFBew7.csv&quot;, na.strings = c(&quot;&quot;,&quot; &quot;,NA))
 
 summarizeColumns(train)</code></pre>
@@ -391,13 +383,8 @@ mydata$Workclass[mydata$Workclass==&quot;Without-pay&quot;]&lt;-&quot;Never-work
 mydata$Workclass&lt;-as.character(mydata$Workclass)
 mydata$Workclass&lt;-as.factor(mydata$Workclass)
 
-library(caret)</code></pre>
-<pre><code>## 
-## Attaching package: 'caret'</code></pre>
-<pre><code>## The following object is masked from 'package:mlr':
-## 
-##     train</code></pre>
-<pre class="r"><code>#separate into two data sets with known workclass and na's,leaving out occupation
+library(caret)
+#separate into two data sets with known workclass and na's,leaving out occupation
 workclass&lt;-mydata[!is.na(mydata$Workclass),c(2:5,7:11)]
 workna&lt;-mydata[is.na(mydata$Workclass),c(2:5,7:11)]
 t2&lt;-createDataPartition(workclass$Workclass,list=FALSE,p=0.8)
@@ -425,17 +412,14 @@ occpred1&lt;-predict(occtree,newdata=occtest)
 
 confusionMatrix(occpred1,occtest$Occupation)$overall</code></pre>
 <pre><code>##       Accuracy          Kappa  AccuracyLower  AccuracyUpper   AccuracyNull 
-##   2.353836e-01   1.218855e-01   2.267461e-01   2.441889e-01   1.341013e-01 
+##   2.325581e-01   1.187346e-01   2.239578e-01   2.413281e-01   1.341013e-01 
 ## AccuracyPValue  McnemarPValue 
-##  1.433235e-151            NaN</code></pre>
+##  6.820372e-144            NaN</code></pre>
 <pre class="r"><code>#This performs really badly
 
 #replacing them all with the mode is even worse
 occpred2&lt;-rep(&quot;Prof-specialty&quot;,dim(occtest)[1])
 confusionMatrix(occpred2,occtest$Occupation)$overall</code></pre>
-<pre><code>## Warning in confusionMatrix.default(occpred2, occtest$Occupation): Levels
-## are not in the same order for reference and data. Refactoring data to
-## match.</code></pre>
 <pre><code>##       Accuracy          Kappa  AccuracyLower  AccuracyUpper   AccuracyNull 
 ##      0.1341013      0.0000000      0.1272012      0.1412339      0.1341013 
 ## AccuracyPValue  McnemarPValue 
@@ -609,11 +593,9 @@ rf_tune$x</code></pre>
 <pre class="r"><code>#train the model
 rffit&lt;-train(data=train,Income.Group~.,&quot;rf&quot;,ntree=407,nodesize=44)</code></pre>
 <pre class="r"><code>#make predictions
-rfmodel &lt;- predict(rffit, test)</code></pre>
-<pre><code>## Loading required package: randomForest</code></pre>
-<pre><code>## randomForest 4.6-12</code></pre>
-<pre><code>## Type rfNews() to see new features/changes/bug fixes.</code></pre>
-<pre class="r"><code># #create a submission file
+rfmodel &lt;- predict(rffit, test)
+
+# #create a submission file
 # submit &lt;- data.frame(ID = mydata$ID[32562:48842], Income.Group = rfmodel)
 # write.csv(submit, &quot;submission2.csv&quot;,row.names = F)</code></pre>
 <p>Interestingly, the optimal mtry turned out to be 2, which I hadn’t included in the hypertuning search.<br />
@@ -653,27 +635,27 @@ varImp(rffit)</code></pre>
 ## 
 ##   only 20 most important variables shown (out of 78)
 ## 
-##                                   Overall
-## Marital.StatusMarried-civ-spouse  100.000
-## Age                                64.699
-## Marital.StatusNever-married        51.278
-## Hours.Per.Week                     41.753
-## EducationBachelors                 37.147
-## OccupationExec-managerial          32.574
-## RelationshipOwn-child              26.410
-## OccupationProf-specialty           14.447
-## EducationHS-grad                   11.153
-## EducationMasters                    6.726
-## OccupationSales                     4.712
-## Native.Countrypoor                  2.657
-## EducationPreschool                  0.000
-## `Marital.StatusNever-married`       0.000
-## `Marital.StatusMarried-AF-spouse`   0.000
-## `EducationHS-grad`                  0.000
-## Education9th                        0.000
-## `WorkclassSelf-emp-inc`             0.000
-## `OccupationFarming-fishing`         0.000
-## `Education1st-4th`                  0.000</code></pre>
+##                                    Overall
+## Marital.StatusMarried-civ-spouse   100.000
+## Age                                 64.699
+## Marital.StatusNever-married         51.278
+## Hours.Per.Week                      41.753
+## EducationBachelors                  37.147
+## OccupationExec-managerial           32.574
+## RelationshipOwn-child               26.410
+## OccupationProf-specialty            14.447
+## EducationHS-grad                    11.153
+## EducationMasters                     6.726
+## OccupationSales                      4.712
+## Native.Countrypoor                   2.657
+## `OccupationArmed-Forces`             0.000
+## Native.CountryGreece                 0.000
+## `Marital.StatusMarried-civ-spouse`   0.000
+## `OccupationProtective-serv`          0.000
+## `EducationHS-grad`                   0.000
+## Marital.StatusSeparated              0.000
+## Native.CountryHong                   0.000
+## `RelationshipOther-relative`         0.000</code></pre>
 <p>I now try to improve accuracy by combining levels of factors that are not important.</p>
 <pre class="r"><code>library(car)
 train$Occupation&lt;-recode(train$Occupation,&quot;c('Adm-clerical','Armed-Forces','Craft-repair','Farming-fishing', 'Handlers-cleaners', 'Machine-op-inspct', 'Protective-serv' , 'Priv-house-serv','Transport-moving' ) = 'other'&quot;)
